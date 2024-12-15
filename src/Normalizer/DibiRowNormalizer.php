@@ -5,10 +5,14 @@ namespace Lsr\Serializer\Normalizer;
 use Dibi\Row;
 use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
+use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
+use Symfony\Component\Serializer\Exception\RuntimeException;
 use Symfony\Component\Serializer\Mapping\ClassDiscriminatorFromClassMetadata;
 use Symfony\Component\Serializer\Mapping\ClassDiscriminatorResolverInterface;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactoryInterface;
 use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use function is_callable;
 
@@ -83,14 +87,18 @@ final class DibiRowNormalizer extends AbstractObjectNormalizer
         ];
     }
 
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []) : bool {
+        return $data instanceof Row;
+    }
+
     /**
      * @param  Context  $context
-     * @return array<string,mixed>
+     * @return array<string>
      */
     protected function extractAttributes(object $object, ?string $format = null, array $context = []) : array {
         assert($object instanceof Row, 'Invalid input object.');
         /** @phpstan-ignore return.type */
-        return $object->toArray();
+        return array_keys($object->toArray());
     }
 
     /**
@@ -118,5 +126,10 @@ final class DibiRowNormalizer extends AbstractObjectNormalizer
     ) : void {
         assert($object instanceof Row, 'Invalid input object.');
         $object->{$attribute} = $value;
+    }
+
+    protected function instantiateObject(array &$data, string $class, array &$context, \ReflectionClass $reflectionClass, array|bool $allowedAttributes, ?string $format = null): object
+    {
+        return new $class($data);
     }
 }

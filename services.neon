@@ -1,0 +1,5 @@
+parameters:
+services:
+	symfony.normalizer.datetime: Lsr\Serializer\Normalizer\DateTimeNormalizer
+	symfony.normalizer.dibiRow: Lsr\Serializer\Normalizer\DibiRowNormalizer
+	mapper: Lsr\Serializer\Mapper

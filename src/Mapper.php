@@ -11,11 +11,11 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 /**
  * Object mapper based on Symfony serializer
  */
-class Mapper
+readonly class Mapper
 {
 
     public function __construct(
-      private readonly DenormalizerInterface $serializer,
+      private DenormalizerInterface $serializer,
     ) {}
 
 

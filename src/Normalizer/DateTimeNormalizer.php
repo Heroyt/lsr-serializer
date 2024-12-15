@@ -82,9 +82,9 @@ final class DateTimeNormalizer implements NormalizerInterface, DenormalizerInter
      * @param  mixed  $object
      * @param  string|null  $format
      * @param  Context  $context
-     * @return int|float|string
+     * @return int|float|string|array{date:non-empty-string,timezone:non-empty-string}
      */
-    public function normalize(mixed $object, ?string $format = null, array $context = []): int|float|string {
+    public function normalize(mixed $object, ?string $format = null, array $context = []): int|float|string|array {
         if (!$object instanceof DateTimeInterface) {
             throw new InvalidArgumentException('The object must implement the "\DateTimeInterface".');
         }
@@ -101,6 +101,7 @@ final class DateTimeNormalizer implements NormalizerInterface, DenormalizerInter
         return match ($context[self::CAST_KEY] ?? $this->defaultContext[self::CAST_KEY] ?? false) {
             'int' => (int) $object->format($dateTimeFormat),
             'float' => (float) $object->format($dateTimeFormat),
+            'array' => ['date' => $object->format($dateTimeFormat), 'timezone' => $object->getTimezone()->getName()],
             default => $object->format($dateTimeFormat),
         };
     }
