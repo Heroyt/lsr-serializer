@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Lsr\Serializer;
@@ -13,10 +14,11 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
  */
 readonly class Mapper
 {
-
     public function __construct(
-      private DenormalizerInterface $serializer,
-    ) {}
+        private DenormalizerInterface $serializer,
+    )
+    {
+    }
 
 
     /**
@@ -31,8 +33,8 @@ readonly class Mapper
      * @throws PartialDenormalizationException Occurs when one or more properties of $type fails to denormalize
      * @throws ExceptionInterface
      */
-    public function map(mixed $data, string $type, array $context = []) : mixed {
+    public function map(mixed $data, string $type, array $context = []): mixed
+    {
         return $this->serializer->denormalize($data, $type, null, $context);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TestCases;
@@ -7,16 +8,16 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
+use Generator;
 use Lsr\Serializer\Normalizer\DateTimeNormalizer;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Generator;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 
 class DateTimeNormalizerTest extends TestCase
 {
-
-    public static function getTestData() : Generator {
+    public static function getTestData(): Generator
+    {
         yield [
             '2024-01-01 00:00:00',
             new DateTimeImmutable('2024-01-01 00:00:00'),
@@ -47,7 +48,8 @@ class DateTimeNormalizerTest extends TestCase
         ];
     }
 
-    public static function getDenormalizationErrorData() : Generator {
+    public static function getDenormalizationErrorData(): Generator
+    {
         yield [
             'abcdef',
         ];
@@ -67,7 +69,8 @@ class DateTimeNormalizerTest extends TestCase
     }
 
     #[DataProvider('getDenormalizationErrorData')]
-    public function testDenormalizeInvalid(mixed $normalized, array $context = []) : void {
+    public function testDenormalizeInvalid(mixed $normalized, array $context = []): void
+    {
         $normalizer = new DateTimeNormalizer();
 
         $this->expectException(NotNormalizableValueException::class);
@@ -80,7 +83,8 @@ class DateTimeNormalizerTest extends TestCase
         DateTimeInterface $denormalized,
         string            $class,
         array             $context = []
-    ) : void {
+    ): void
+    {
         $normalizer = new DateTimeNormalizer();
 
         $this->assertTrue($normalizer->supportsDenormalization($normalized, $class));
@@ -89,7 +93,8 @@ class DateTimeNormalizerTest extends TestCase
         $this->assertEquals($denormalized->format('c'), $date->format('c'));
     }
 
-    public function testDenormalizeFromObject() : void {
+    public function testDenormalizeFromObject(): void
+    {
         $normalizer = new DateTimeNormalizer();
         $date = new DateTimeImmutable('2024-01-01 00:00:00');
         $this->assertTrue($normalizer->supportsDenormalization($date, DateTimeImmutable::class));
@@ -105,7 +110,8 @@ class DateTimeNormalizerTest extends TestCase
         DateTimeInterface $denormalized,
         string            $class,
         array             $context = []
-    ) : void {
+    ): void
+    {
         $normalizer = new DateTimeNormalizer();
 
         $this->assertTrue($normalizer->supportsNormalization($denormalized));

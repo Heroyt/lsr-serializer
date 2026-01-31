@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TestCases;
@@ -10,8 +11,8 @@ use PHPUnit\Framework\TestCase;
 
 class DibiRowNormalizerTest extends TestCase
 {
-
-    public static function getData() : \Generator {
+    public static function getData(): \Generator
+    {
         $data = [
             'test' => 123,
             'foo' => 'bar',
@@ -27,7 +28,8 @@ class DibiRowNormalizerTest extends TestCase
         array $normalized,
         Row $denormalized,
         array $context = [],
-    ) : void {
+    ): void
+    {
         $normalizer = new DibiRowNormalizer();
 
         $this->assertTrue($normalizer->supportsNormalization($denormalized));
@@ -42,7 +44,8 @@ class DibiRowNormalizerTest extends TestCase
         array $normalized,
         Row $denormalized,
         array $context = [],
-    ) : void {
+    ): void
+    {
         $normalizer = new DibiRowNormalizer();
 
         $this->assertTrue($normalizer->supportsDenormalization($normalized, Row::class));

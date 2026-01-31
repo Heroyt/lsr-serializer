@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TestCases;
@@ -20,10 +21,10 @@ use Symfony\Component\Serializer\Serializer;
 
 class MapperTest extends TestCase
 {
-
     private Mapper $mapper;
 
-    public function testMapArray() : void {
+    public function testMapArray(): void
+    {
         $data = [
           'string'         => 'string',
           'int'            => 123,
@@ -64,8 +65,8 @@ class MapperTest extends TestCase
         self::assertInstanceOf(DateTimeInterface::class, $object->datetimeArray);
         self::assertEquals($data['datetimeArray']['date'], $object->datetimeArray->format('Y-m-d\TH:i:s'));
         self::assertEquals(
-          (new DateTimeZone($data['datetimeArray']['timezone']))->getName(),
-          $object->datetimeArray->getTimezone()->getName()
+            (new DateTimeZone($data['datetimeArray']['timezone']))->getName(),
+            $object->datetimeArray->getTimezone()->getName()
         );
         self::assertInstanceOf(MappedClassB::class, $object->child);
         self::assertEquals('child', $object->child->string);
@@ -76,7 +77,8 @@ class MapperTest extends TestCase
         self::assertNull($object->nullableChild);
     }
 
-    public function testMapDibiRow() : void {
+    public function testMapDibiRow(): void
+    {
         $data = [
           'string'         => 'string',
           'int'            => 123,
@@ -118,8 +120,8 @@ class MapperTest extends TestCase
         self::assertInstanceOf(DateTimeInterface::class, $object->datetimeArray);
         self::assertEquals($data['datetimeArray']['date'], $object->datetimeArray->format('Y-m-d\TH:i:s'));
         self::assertEquals(
-          (new DateTimeZone($data['datetimeArray']['timezone']))->getName(),
-          $object->datetimeArray->getTimezone()->getName()
+            (new DateTimeZone($data['datetimeArray']['timezone']))->getName(),
+            $object->datetimeArray->getTimezone()->getName()
         );
         self::assertInstanceOf(MappedClassB::class, $object->child);
         self::assertEquals('child', $object->child->string);
@@ -130,19 +132,20 @@ class MapperTest extends TestCase
         self::assertNull($object->nullableChild);
     }
 
-    protected function setUp() : void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->mapper = new Mapper(
-          new Serializer(
-            [
-              new ArrayDenormalizer(),
-              new DateTimeNormalizer(),
-              new DibiRowNormalizer(),
-              new BackedEnumNormalizer(),
-              new JsonSerializableNormalizer(),
-              new ObjectNormalizer(propertyTypeExtractor: new ReflectionExtractor(),),
-            ]
-          )
+            new Serializer(
+                [
+                    new ArrayDenormalizer(),
+                    new DateTimeNormalizer(),
+                    new DibiRowNormalizer(),
+                    new BackedEnumNormalizer(),
+                    new JsonSerializableNormalizer(),
+                    new ObjectNormalizer(propertyTypeExtractor: new ReflectionExtractor(),),
+                ]
+            )
         );
     }
 }
