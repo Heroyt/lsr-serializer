@@ -1,7 +1,7 @@
 {
   "name": "lsr/serializer",
   "description": "Laser framework core - Serializer",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "repositories": [
     {
       "type": "composer",

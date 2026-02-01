@@ -157,7 +157,7 @@ class SerializerExtensions extends CompilerExtension
         $classMetadataFactory = $builder->addDefinition($this->prefix('classMetadataFactory'))
             ->setType(ClassMetadataFactory::class)
             ->setFactory(ClassMetadataFactory::class, [
-                'loaders' => [$attributeLoader],
+                'loader' => $attributeLoader,
             ])
             ->setTags(['lsr', 'serializer', 'symfony']);
 
@@ -198,7 +198,8 @@ class SerializerExtensions extends CompilerExtension
         );
 
         foreach ($extractors as $extractor) {
-            $name = lcfirst(new ReflectionClass($extractor)->getShortName());
+            $reflection = new ReflectionClass($extractor);
+            $name = lcfirst($reflection->getShortName());
             $extractorDefinition = $builder->addDefinition($this->prefix('extractor.' . $name))
                 ->setType($extractor)
                 ->setFactory($extractor)
@@ -241,13 +242,25 @@ class SerializerExtensions extends CompilerExtension
         );
 
         foreach ($normalizers as $normalizer) {
-            $name = lcfirst(new ReflectionClass($normalizer)->getShortName());
-            $this->normalizers[] = $builder->addDefinition($this->prefix('normalizer.' . $name))
+            $reflection = new ReflectionClass($normalizer);
+            $name = lcfirst($reflection->getShortName());
+            $this->normalizers[] = $definition = $builder->addDefinition($this->prefix('normalizer.' . $name))
                 ->setType($normalizer)
                 ->setFactory($normalizer)
-                ->setArgument('defaultContext', $normalizerContext)
                 ->setAutowired(false)
                 ->setTags(['lsr', 'serializer', 'symfony', 'normalizer']);
+
+            // Check if the constructor has a "defaultContext" argument
+            $reflectionConstructor = $reflection->getConstructor();
+            if ($reflectionConstructor !== null) {
+                $parameters = $reflectionConstructor->getParameters();
+                foreach ($parameters as $parameter) {
+                    if ($parameter->getName() === 'defaultContext') {
+                        $definition->setArgument('defaultContext', $normalizerContext);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -269,13 +282,26 @@ class SerializerExtensions extends CompilerExtension
         );
 
         foreach ($denormalizers as $normalizer) {
-            $name = lcfirst(new ReflectionClass($normalizer)->getShortName());
-            $this->normalizers[] = $builder->addDefinition($this->prefix('normalizer.' . $name))
+            $reflection = new ReflectionClass($normalizer);
+            $name = lcfirst($reflection->getShortName());
+            $this->normalizers[] = $definition = $builder->addDefinition($this->prefix('normalizer.' . $name))
                 ->setType($normalizer)
                 ->setFactory($normalizer)
-                ->setArgument('defaultContext', $normalizerContext)
                 ->setAutowired(false)
                 ->setTags(['lsr', 'serializer', 'symfony', 'normalizer']);
+
+
+            // Check if the constructor has a "defaultContext" argument
+            $reflectionConstructor = $reflection->getConstructor();
+            if ($reflectionConstructor !== null) {
+                $parameters = $reflectionConstructor->getParameters();
+                foreach ($parameters as $parameter) {
+                    if ($parameter->getName() === 'defaultContext') {
+                        $definition->setArgument('defaultContext', $normalizerContext);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -297,13 +323,25 @@ class SerializerExtensions extends CompilerExtension
         );
 
         foreach ($encoders as $encoder) {
-            $name = lcfirst(new ReflectionClass($encoder)->getShortName());
-            $this->encoders[] = $builder->addDefinition($this->prefix('encoder.' . $name))
+            $reflection = new ReflectionClass($encoder);
+            $name = lcfirst($reflection->getShortName());
+            $this->encoders[] = $definition = $builder->addDefinition($this->prefix('encoder.' . $name))
                 ->setType($encoder)
                 ->setFactory($encoder)
-                ->setArgument('defaultContext', $encoderContext)
                 ->setAutowired(false)
                 ->setTags(['lsr', 'serializer', 'symfony', 'encoder']);
+
+            // Check if the constructor has a "defaultContext" argument
+            $reflectionConstructor = $reflection->getConstructor();
+            if ($reflectionConstructor !== null) {
+                $parameters = $reflectionConstructor->getParameters();
+                foreach ($parameters as $parameter) {
+                    if ($parameter->getName() === 'defaultContext') {
+                        $definition->setArgument('defaultContext', $encoderContext);
+                        break;
+                    }
+                }
+            }
         }
     }
 }
