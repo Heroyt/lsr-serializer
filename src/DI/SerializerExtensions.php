@@ -49,11 +49,11 @@ use Symfony\Component\Serializer\Serializer;
  *     extraDenormalizers: list<class-string<object>>,
  *     extraEncoders: list<class-string<object>>,
  *     context: object{
- *          common: object,
- *          encoder: object,
- *          serializer: object,
- *          normalizer: object,
- *          denormalizer: object,
+ *          common: array<string,mixed>,
+ *          encoder: array<string,mixed>,
+ *          serializer: array<string,mixed>,
+ *          normalizer: array<string,mixed>,
+ *          denormalizer: array<string,mixed>,
  *     }
  * } $config
  */
@@ -105,8 +105,8 @@ class SerializerExtensions extends CompilerExtension
                 ]),
                 'extraEncoders' => Expect::listOf('string')->default([]),
                 'context' => Expect::structure([
-                    'common' => Expect::structure([])->default([]),
-                    'encoder' => Expect::structure([])->default([
+                    'common' => Expect::array()->default([]),
+                    'encoder' => Expect::array()->default([
                         JsonDecode::ASSOCIATIVE => true,
                         JsonEncode::OPTIONS => JSON_UNESCAPED_UNICODE
                             | JSON_UNESCAPED_SLASHES
@@ -114,33 +114,13 @@ class SerializerExtensions extends CompilerExtension
                             | JSON_THROW_ON_ERROR
                             | JSON_INVALID_UTF8_SUBSTITUTE,
                     ]),
-                    'serializer' => Expect::structure([])->default([
-
-                    ]),
-                    'normalizer' => Expect::structure([])->default([
+                    'serializer' => Expect::array()->default([]),
+                    'normalizer' => Expect::array()->default([
                         AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => [
                             SerializerHelper::class,
                             'handleCircularReference',
                         ],
                     ]),
-                ])->default([
-                    'common' => [],
-                    'encoder' => [
-                        JsonDecode::ASSOCIATIVE => true,
-                        JsonEncode::OPTIONS => JSON_UNESCAPED_UNICODE
-                            | JSON_UNESCAPED_SLASHES
-                            | JSON_PRESERVE_ZERO_FRACTION
-                            | JSON_THROW_ON_ERROR
-                            | JSON_INVALID_UTF8_SUBSTITUTE,
-                    ],
-                    'serializer' => [],
-                    'normalizer' => [
-                        AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => [
-                            SerializerHelper::class,
-                            'handleCircularReference',
-                        ],
-                    ],
-                    'denormalizer' => [],
                 ]),
             ]
         );
