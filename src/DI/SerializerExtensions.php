@@ -121,6 +121,7 @@ class SerializerExtensions extends CompilerExtension
                             'handleCircularReference',
                         ],
                     ]),
+                    'denormalizer' => Expect::array()->default([]),
                 ]),
             ]
         );
